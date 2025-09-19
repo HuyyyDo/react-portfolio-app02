@@ -14,7 +14,7 @@ const projects = [
     role: 'C# Developer',
     description:
       'WinForms app implementing a Fraction class with operator overloading and unit tests.',
-    link: '/assets/FractionCalculator (2).zip', // replace with your repo or file when ready
+    link: '/assets/fractioncalculator.zip', // replace with your repo or file when ready
   },
 ];
 
