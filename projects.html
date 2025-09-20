@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects · Personal Portfolio</title>
+  <meta name="description" content="Personal portfolio of a software developer." />
+  <link rel="preload" href="assets/logo.svg" as="image" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="index.html" aria-label="Go to Home">
+      <img src="assets/logo.svg" alt="Custom Logo" width="40" height="40" />
+      <span class="brand-name">My Portfolio</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">☰</button>
+    <ul id="nav-menu" class="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+<main class="container" role="main">
+  <section>
+    <h1>Projects</h1>
+    <p class="muted">A selection of work. Swap out images and text with your own.</p>
+
+    <div class="grid three">
+      <article class="card project">
+        <img src="assets/hyperopt.png" alt="Screenshot of Project One" />
+        <div class="card-body">
+          <h2>Project One</h2>
+          <p>Role: To find the best stock using trained AI models.</p>
+          <p class="links">
+            <a href="#" aria-label="Open live demo for Project One">Live</a> ·
+            <a href="#" aria-label="Open source code for Project One">Code</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="card project">
+        <img src="assets/fraction.png" alt="Screenshot of Project Two" />
+        <div class="card-body">
+          <h2>Project Two</h2>
+          <p>Role: Full‑stack Developer — Implemented REST APIs and database models for a small web app.</p>
+          <p class="links">
+            <a href="#" aria-label="Open live demo for Project Two">Live</a> ·
+            <a href="#" aria-label="Open source code for Project Two">Code</a>
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <p>© <span id="year"></span> Trong Do Huy Hoang. All rights reserved.</p>
+</footer>
+</body>
+</html>

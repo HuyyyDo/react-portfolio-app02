@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home · Personal Portfolio</title>
+  <meta name="description" content="Personal portfolio of a software developer." />
+  <link rel="preload" href="assets/logo.svg" as="image" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="index.html" aria-label="Go to Home">
+      <img src="assets/logo.svg" alt="Custom Logo" width="40" height="40" />
+      <span class="brand-name">My Portfolio</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">☰</button>
+    <ul id="nav-menu" class="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+<main class="container" role="main">
+  <!-- Welcome / Hero -->
+  <section class="hero">
+    <h1>Welcome to my Portfolio</h1>
+    <p class="lead">I build clean, scalable, and user-friendly software.</p>
+    <p class="mission"><strong>Mission:</strong> Craft reliable solutions that make everyday tasks simple and delightful.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="about.html">Learn About Me</a>
+      <a class="btn" href="projects.html">See My Projects</a>
+    </div>
+  </section>
+
+  <!-- Message panel that appears after contact form submission -->
+  <section id="contact-return" class="panel hidden" aria-live="polite"></section>
+
+  <!-- Quick links -->
+  <section class="grid two">
+    <article class="card">
+      <h2>Recent Projects</h2>
+      <p>Explore highlighted work with concise write-ups and source links.</p>
+      <a class="btn" href="projects.html" aria-label="Go to Projects page">Browse Projects</a>
+    </article>
+    <article class="card">
+      <h2>Services</h2>
+      <p>From web development to backend APIs and databases — I can help.</p>
+      <a class="btn" href="services.html" aria-label="Go to Services page">What I Offer</a>
+    </article>
+  </section>
+</main>
+<footer class="site-footer">
+  <p>© <span id="year"></span> Ba Thinh Vuong. All rights reserved.</p>
+</footer>
+</body>
+</html>

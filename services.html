@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services · Personal Portfolio</title>
+  <meta name="description" content="Personal portfolio of a software developer." />
+  <link rel="preload" href="assets/logo.svg" as="image" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="index.html" aria-label="Go to Home">
+      <img src="assets/logo.svg" alt="Custom Logo" width="40" height="40" />
+      <span class="brand-name">My Portfolio</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">☰</button>
+    <ul id="nav-menu" class="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+<main class="container" role="main">
+  <section>
+    <h1>Services</h1>
+    <p class="muted">Clear, flexible offerings. Add or edit to fit your business.</p>
+
+    <div class="grid three">
+      <article class="card service">
+        <img src="assets/service-web.jpg" alt="Web development illustration" />
+        <div class="card-body">
+          <h2>Web Development</h2>
+          <ul>
+            <li>Responsive websites</li>
+            <li>Accessibility first</li>
+            <li>Performance optimization</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card service">
+        <img src="assets/service-backend.jpg" alt="Server backend illustration" />
+        <div class="card-body">
+          <h2>APIs & Backends</h2>
+          <ul>
+            <li>REST/GraphQL APIs</li>
+            <li>Database design</li>
+            <li>Auth & security</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card service">
+        <img src="assets/service-mobile.jpg" alt="Mobile app illustration" />
+        <div class="card-body">
+          <h2>Mobile Prototypes</h2>
+          <ul>
+            <li>Cross‑platform prototyping</li>
+            <li>Offline‑first patterns</li>
+            <li>Usability testing</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <p>© <span id="year"></span> Trong Do Huy Hoang. All rights reserved.</p>
+</footer>
+</body>
+</html>
