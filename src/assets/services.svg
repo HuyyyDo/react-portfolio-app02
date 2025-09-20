@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" rx="24" ry="24" fill="#0b1020"/>
+  <g stroke="#22d3ee" stroke-width="4" fill="none">
+    <circle cx="140" cy="120" r="48"/>
+    <rect x="240" y="80" width="120" height="80" rx="12" ry="12"/>
+    <path d="M420 92 h120 v56 h-120 z"/>
+  </g>
+  <g fill="#e5e7eb" font-family="Inter,Segoe UI,Arial" text-anchor="middle">
+    <text x="320" y="300" font-size="18" opacity=".8">Service Icons Placeholder</text>
+  </g>
+</svg>
