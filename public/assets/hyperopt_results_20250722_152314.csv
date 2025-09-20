@@ -1,0 +1,6 @@
+Iteration,Best Hyperparameters,Val AUC,Test AUC,Best Iteration,Time (s)
+1,"{'colsample_bytree': 0.6000000000000001, 'gamma': 0.06, 'learning_rate': 0.08, 'max_bin': 512, 'max_depth': 4, 'min_child_weight': 3, 'reg_alpha': 0.0, 'reg_lambda': 4.0, 'subsample': 0.9}",0.5452959179163046,0.6894 / 0.5238,1,1.64
+10,"{'colsample_bytree': 0.30000000000000004, 'gamma': 0.02, 'learning_rate': 0.1, 'max_bin': 256, 'max_depth': 3, 'min_child_weight': 1, 'reg_alpha': 0.4, 'reg_lambda': 2.0, 'subsample': 0.9}",0.5497324379153031,0.6857 / 0.5220,4,1.7
+20,"{'colsample_bytree': 0.2, 'gamma': 0.04, 'learning_rate': 0.06, 'max_bin': 128, 'max_depth': 5, 'min_child_weight': 2, 'reg_alpha': 0.0, 'reg_lambda': 4.0, 'subsample': 0.7000000000000001}",0.5522394157238678,0.6890 / 0.5316,12,1.95
+50,"{'colsample_bytree': 0.2, 'gamma': 0.04, 'learning_rate': 0.06, 'max_bin': 128, 'max_depth': 5, 'min_child_weight': 2, 'reg_alpha': 0.0, 'reg_lambda': 4.0, 'subsample': 0.7000000000000001}",0.5522394157238678,0.6890 / 0.5316,12,1.95
+100,"{'colsample_bytree': 0.2, 'gamma': 0.04, 'learning_rate': 0.08, 'max_bin': 512, 'max_depth': 6, 'min_child_weight': 2, 'reg_alpha': 0.4, 'reg_lambda': 2.0, 'subsample': 0.6000000000000001}",0.5544052951492728,0.6844 / 0.5115,53,1.62
