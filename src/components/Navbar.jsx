@@ -17,6 +17,7 @@ export default function Navbar(){
           <NavLink to="/projects" className={({isActive}) => isActive ? 'active' : ''}>Projects</NavLink>
           <NavLink to="/services" className={({isActive}) => isActive ? 'active' : ''}>Services</NavLink>
           <NavLink to="/contact" className={({isActive}) => isActive ? 'active' : ''}>Contact</NavLink>
+          <NavLink to="/admin/users" className={({isActive}) => isActive ? "active" : ""}>Admin</NavLink>
         </nav>
       </div>
     </header>

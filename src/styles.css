@@ -105,3 +105,19 @@ form .actions{ display:flex; gap:.75rem; align-items:center; margin-top:.75rem; 
   .hero{ grid-template-columns: 1fr; }
   form .row{ grid-template-columns: 1fr; }
 }
+
+.card{background:#0b1220;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;margin:8px 0}
+.nav a{padding:8px 12px;border-radius:10px}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:inherit;cursor:pointer}
+.btn.primary{background:#22d3ee;border-color:#22d3ee;color:#09131f}
+.btn.danger{background:#ef4444;border-color:#ef4444;color:white}
+.input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:#09131f;color:#e5e7eb}
+.label{font-size:12px;color:#9ca3af;margin-bottom:6px}
+.row{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.col-6{grid-column:span 6}
+.col-12{grid-column:span 12}
+.kv{display:flex;gap:12px;align-items:center}
+.toast{position:fixed;right:18px;bottom:18px;background:#111827;border:1px solid rgba(255,255,255,0.12);padding:10px 12px;border-radius:12px}
+.spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.2);border-top-color:#22d3ee;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{padding:16px;color:#9ca3af}
