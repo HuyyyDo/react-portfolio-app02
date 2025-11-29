@@ -121,3 +121,153 @@ form .actions{ display:flex; gap:.75rem; align-items:center; margin-top:.75rem; 
 .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.2);border-top-color:#22d3ee;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty{padding:16px;color:#9ca3af}
+
+
+/* ----- Patch: styles that align Navbar JSX with existing theme ----- */
+
+/* make sticky header sit above everything */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* ensure above content */
+}
+
+/* If your Navbar component wraps content with .navbar-inner, keep using it.
+   If not present, these styles still apply to direct children. */
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: .75rem 1rem;
+}
+
+/* support both naming schemes: .navbar-left/.navbar-center/.navbar-right */
+.navbar-left, .brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex: 0 0 auto;
+}
+
+.navbar-center {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* make sure your links look consistent with existing styles */
+.navbar .nav-link,
+.nav-links a,
+.navbar-center a {
+  padding: .45rem .6rem;
+  border-radius: .6rem;
+  color: var(--text);
+  opacity: .95;
+  text-decoration: none;
+}
+
+.navbar .nav-link:hover,
+.nav-links a:hover,
+.navbar-center a:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+/* keep auth buttons aligned and consistent with existing .btn rules */
+.navbar .btn,
+.navbar-right .btn,
+.navbar .btn-link {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* primary sign up button style */
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #07101a;
+}
+
+/* ensure main container content doesn't sit under the navbar */
+main.container {
+  /* if you still see overlap, increase this to the actual header height, e.g. 70px */
+  padding-top: 1rem;
+}
+
+/* responsive: collapse center links on small screens (optional) */
+@media (max-width: 720px) {
+  .navbar-center, .nav-links { display: none; }
+}
+/* ---------- Center nav-links in the navbar (flex-based) ---------- */
+
+.navbar { position: sticky; top: 0; z-index: 1000; }
+
+/* ensure navbar inner is a flex container */
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  justify-content: space-between; /* keeps brand left and auth right */
+}
+
+/* Brand stays left and does not grow */
+.brand, .navbar-left {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex: 0 0 auto; /* no grow, no shrink */
+}
+
+/* Make the nav-links area flexible and center its contents */
+.nav-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center; /* center the links horizontally */
+  flex: 1 1 auto;          /* allow this area to grow/shrink and take available space */
+  margin: 0 1rem;          /* optional spacing from brand and right area */
+}
+
+/* Links appearance */
+.nav-links a {
+  padding: .45rem .65rem;
+  border-radius: .6rem;
+  color: var(--text);
+  opacity: .95;
+  text-decoration: none;
+}
+.nav-links a:hover { background: rgba(255,255,255,0.02); }
+
+/* Auth block stays right and does not grow */
+.navbar-right {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* If the nav-links are too wide for small screens, wrap them */
+@media (max-width: 900px) {
+  .nav-links { gap: .5rem; justify-content: center; flex-wrap: wrap; }
+}
+
+/* On very small screens you might hide center links and show a menu instead */
+@media (max-width: 720px) {
+  .nav-links { display: none; } /* optional: hide center links on tiny screens */
+}
