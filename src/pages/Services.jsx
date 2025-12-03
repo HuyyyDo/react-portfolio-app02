@@ -69,6 +69,7 @@
 
 // src/pages/Services.jsx
 import { useEffect, useState } from "react";
+import api from "../api/index";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 
 // Local examples to fall back to if the API is empty/unavailable
@@ -89,16 +90,11 @@ export default function Services() {
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState("");
 
-  // Use env var in prod, default to localhost in dev
-  const API = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
-
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(`${API}/api/services`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await api.request('/services');
 
         // Backend uses { title, description }; map to { title, desc }
         const mapped = (Array.isArray(data) ? data : []).map(s => ({
@@ -118,7 +114,7 @@ export default function Services() {
       }
     })();
     return () => { alive = false; };
-  }, [API]);
+  }, []);
 
   return (
     <section>

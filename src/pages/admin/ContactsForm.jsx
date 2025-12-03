@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import apiIndex from '../../api/index'
 import { api } from '../../api/client'
 import { RES } from '../../api/resources'
 import Spinner from '../../components/Spinner'
@@ -17,7 +18,7 @@ export default function ContactForm(){
   React.useEffect(()=>{
     if(!isEdit) return
     let alive = true
-    api.get(RES.contacts, id).then(d=>{{ if(alive) setForm(d) }}).catch(e=>setError(e.message)).finally(()=>setLoading(false))
+    apiIndex.request(`/contacts/${id}`).then(d=>{{ if(alive) setForm(d) }}).catch(e=>setError(e.message)).finally(()=>setLoading(false))
     return ()=>{{ alive=false }}
   },[id])
 
@@ -25,8 +26,8 @@ export default function ContactForm(){
     e.preventDefault()
     setSaving(true)
     try{
-      if(isEdit) await api.update(RES.contacts, id, form)
-      else await api.create(RES.contacts, form)
+      if(isEdit) await apiIndex.request(`/contacts/${id}`, { method: 'PUT', body: JSON.stringify(form) })
+      else await apiIndex.request('/contacts', { method: 'POST', body: JSON.stringify(form) })
       toast(isEdit? 'Updated' : 'Created')
       nav('/admin/contacts')
     }catch(e){ setError(e.message) } finally{ setSaving(false) }

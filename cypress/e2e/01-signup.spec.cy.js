@@ -9,45 +9,14 @@ describe('Sign Up flow', () => {
 
     cy.contains('Sign Up').click();
 
-    // Go to signin
-    cy.visit('/signin');
-    cy.get('input[placeholder="Email"]').type(Cypress.env('TEST_EMAIL'));
-    cy.get('input[placeholder="Password"]').type(Cypress.env('TEST_PASSWORD'));
-    cy.contains('Sign In').click();
-
-    // Try to read token from localStorage. If it's null, call backend signin and set it.
-    const apiSigninUrl = 'http://localhost:4000/signin'; // change if your backend URL differs
-
-    cy.window()
-      .its('localStorage')
-      .invoke('getItem', 'token')
-      .then((token) => {
-        if (token) {
-          // token exists — continue
-          cy.log('token present in localStorage');
-        } else {
-          // token missing — fallback to API login and set token manually
-          cy.log('token not found, logging in via API fallback');
-          cy.request({
-            method: 'POST',
-            url: apiSigninUrl,
-            body: {
-              email: Cypress.env('TEST_EMAIL'),
-              password: Cypress.env('TEST_PASSWORD')
-            },
-            failOnStatusCode: true
-          }).then((resp) => {
-            expect(resp.status).to.eq(200);
-            // save token in localStorage of app window
-            cy.window().then((win) => {
-              win.localStorage.setItem('token', resp.body.token);
-            });
-          });
+    // Sign in via helper (returns token or empty string)
+    cy.appSignIn().then((token) => {
+      cy.visit('/projects', {
+        onBeforeLoad(win) {
+          if (token) win.localStorage.setItem('token', token);
         }
       });
-
-    // Now visit protected page (app should treat user as authenticated)
-    cy.visit('/projects');
+    });
 
     // Assert something that exists on the projects page.
     cy.get('body', { timeout: 10000 }).then(($body) => {

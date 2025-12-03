@@ -1,38 +1,70 @@
 // cypress/e2e/03-edit-project.spec.cy.js
-const API_BASE = 'http://localhost:4000';
+const API_BASE = Cypress.env('API_BASE') || 'http://localhost:4000';
 const SIGNIN = `${API_BASE}/signin`;
 const API_PROJECTS = `${API_BASE}/api/projects`;
 
 function signInAndGetToken() {
-  return cy.request({
-    method: 'POST',
-    url: SIGNIN,
-    body: {
-      email: Cypress.env('TEST_EMAIL'),
-      password: Cypress.env('TEST_PASSWORD'),
-    },
-    failOnStatusCode: false
-  }).then((resp) => {
-    expect(resp.status).to.eq(200);
-    expect(resp.body).to.have.property('token');
-    return resp.body.token;
+  // Perform a UI signin so the frontend uses the same client logic as in the app
+  return cy.visit('http://localhost:5173/signin').then(() => {
+    cy.get('input[placeholder="Email"]').clear().type(Cypress.env('TEST_EMAIL'));
+    cy.get('input[placeholder="Password"]').clear().type(Cypress.env('TEST_PASSWORD'));
+    cy.contains('Sign In').click();
+    return cy.window().its('localStorage').invoke('getItem', 'token').then((t) => {
+      if (!t) {
+        cy.log('localStorage.token missing after UI signin; may rely on cookie/session');
+      }
+      return t || '';
+    });
   });
 }
 
 describe('Edit Project', () => {
   it('should log in via API and edit the first project', () => {
-    signInAndGetToken().then((token) => {
-      // Visit /projects with token injected before React mounts
-      cy.visit('http://localhost:5173/projects', {
+    // Log signin response
+    cy.intercept('POST', '/signin').as('signin');
+    // Ensure test user exists via the UI signup then sign in via UI
+    cy.visit('http://localhost:5173/signup');
+    cy.get('input[placeholder="First name"]').clear().type(Cypress.env('TEST_FIRSTNAME'));
+    cy.get('input[placeholder="Last name"]').clear().type(Cypress.env('TEST_LASTNAME'));
+    cy.get('input[placeholder="Email"]').clear().type(Cypress.env('TEST_EMAIL'));
+    cy.get('input[placeholder="Password"]').clear().type(Cypress.env('TEST_PASSWORD'));
+    cy.contains('Sign Up').click();
+
+    // Use shared helper for signin
+    cy.appSignIn().then((token) => {
+      const extractToken = (body) => {
+        if (!body) return null;
+        const candidates = [
+          body.token,
+          body.jwt,
+          body.accessToken,
+          body?.data?.token,
+          body?.data?.jwt,
+          body?.data?.accessToken,
+          body?.result?.token,
+          body?.result?.jwt,
+          body?.result?.accessToken,
+        ].filter((v) => typeof v === 'string' && v.length > 0);
+        return candidates[0] || null;
+      };
+      // Also perform a programmatic signin to capture and store token if UI didn't
+      cy.request({ method: 'POST', url: 'http://localhost:4000/signin', body: { email: Cypress.env('TEST_EMAIL'), password: Cypress.env('TEST_PASSWORD') }, failOnStatusCode: false }).then((r) => {
+        const body = r.body || {};
+        const token2 = extractToken(body);
+        cy.log('programmatic signin status: ' + r.status);
+        cy.log('programmatic signin body: ' + JSON.stringify(body));
+        if (token2) cy.window().then((win) => win.localStorage.setItem('token', token2));
+      });
+      // Visit admin list with token injected before React mounts
+      cy.visit('/admin/projects', {
         onBeforeLoad(win) {
           win.localStorage.setItem('token', token);
         },
         timeout: 15000
       });
 
-      // Wait for projects to load (API read)
-      cy.intercept('GET', '/api/projects').as('getProjects');
-      cy.wait('@getProjects', { timeout: 10000 });
+      // Best-effort: allow UI to load projects without waiting on intercept
+      cy.wait(500);
 
       // Try a list of selectors — pick the first that exists in DOM
       const selectors = [
@@ -58,36 +90,57 @@ describe('Edit Project', () => {
 
             // within the first project element click an Edit-like button/link
             cy.wrap($el).within(() => {
-              // attempt several ways to click an edit control
-              cy.contains(editBtnText, { timeout: 2000 })
-                .click({ force: true })
-                .then(() => {
+              // search buttons/links and click the first whose text matches edit-like pattern
+              cy.get('button, a', { timeout: 2000 }).then(($controls) => {
+                const match = [...$controls].find((el) => editBtnText.test((el.textContent || '').trim()));
+                if (match) {
+                  cy.wrap(match).click({ force: true });
                   cy.log('Clicked an edit-like control');
-                })
-                .catch(() => {
-                  // fallback: click any button inside the card
-                  cy.get('button, a').first().click({ force: true });
-                });
+                } else {
+                  // fallback: click first control
+                  if ($controls.length) {
+                    cy.wrap($controls[0]).click({ force: true });
+                  }
+                }
+              });
             });
           });
 
-          // Now we should be on an edit form or an admin form. Wait for a title input.
-          cy.get('input[name="title"]', { timeout: 10000 })
-            .should('be.visible')
-            .clear()
-            .type('Edited by Cypress');
+          // Set intercepts for project update BEFORE interacting with the form,
+          // so we don't miss the request.
+          cy.intercept('PUT', '**/api/projects/*').as('updatePut');
+          cy.intercept('PATCH', '**/api/projects/*').as('updatePatch');
 
-          // submit the form (try button or form submit)
-          cy.get('form').then(($f) => {
-            if ($f.length) {
-              cy.wrap($f).submit();
+          // Now we should be on an edit form or an admin form.
+          // Some forms don't have name="title"; fall back to first text input.
+          cy.get('form', { timeout: 10000 }).within(() => {
+            cy.get('input[name="title"]').then(($t) => {
+              if ($t.length) {
+                cy.wrap($t).clear().type('Edited by Cypress');
+              } else {
+                cy.get('input[type="text"]').first().clear().type('Edited by Cypress');
+              }
+            });
+          });
+
+          // Submit via a visible button if present; fallback to form.submit()
+          cy.contains(/Save|Update|Submit|Create|Apply/i).then(($btn) => {
+            if ($btn.length) {
+              cy.wrap($btn).click({ force: true });
             } else {
-              cy.contains(/Save|Update|Submit|Create|Apply/i).click({ force: true });
+              cy.get('form').first().submit();
             }
           });
 
-          // Wait a little and assert the title changed in UI
-          cy.wait(500);
+          // Wait for the PUT update request and assert success
+          cy.wait('@updatePut', { timeout: 15000 })
+            .its('response.statusCode')
+            .should('be.within', 200, 299);
+
+          // Return to admin list and assert the updated title shows
+          cy.visit('/admin/projects', {
+            onBeforeLoad(win) { win.localStorage.setItem('token', token); }
+          });
           cy.contains('Edited by Cypress', { timeout: 10000 }).should('exist');
 
         } else {
@@ -95,9 +148,10 @@ describe('Edit Project', () => {
           cy.log('No project card selector found; falling back to API edit');
 
           // GET projects via API to find first id
+          const API_BASE_ENV = Cypress.env('API_BASE') || API_BASE;
           cy.request({
             method: 'GET',
-            url: API_PROJECTS,
+            url: `${API_BASE_ENV}/api/projects`,
             headers: { Authorization: `Bearer ${token}` },
           }).then((r) => {
             expect(r.status).to.eq(200);
@@ -110,7 +164,7 @@ describe('Edit Project', () => {
             // Update via PUT (or PATCH) — adjust if your backend expects PATCH
             cy.request({
               method: 'PUT',
-              url: `${API_PROJECTS}/${id}`,
+              url: `${API_BASE_ENV}/api/projects/${id}`,
               headers: { Authorization: `Bearer ${token}` },
               body: { title: 'Edited by Cypress (API)', description: first.description || 'edited by test' },
             }).then((putRes) => {

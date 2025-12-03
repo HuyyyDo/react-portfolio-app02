@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api/client'
+import apiIndex from '../../api/index'
 import { RES } from '../../api/resources'
 import Spinner from '../../components/Spinner'
 import { toast } from '../../components/Toast'
@@ -11,12 +12,12 @@ export default function ContactList(){
   const [error,setError] = React.useState('')
   React.useEffect(()=>{
     let alive = true
-    api.list(RES.contacts).then(d=>{ if(alive) setItems(d) }).catch(e=>setError(e.message)).finally(()=>setLoading(false))
+    apiIndex.request('/contacts').then(d=>{ if(alive) setItems(Array.isArray(d) ? d : []) }).catch(e=>setError(e.message)).finally(()=>setLoading(false))
     return ()=>{ alive=false }
   },[])
   async function onDelete(id){
     if(!confirm('Delete this item?')) return
-    await api.remove(RES.contacts, id)
+    await apiIndex.request(`/contacts/${id}`, { method: 'DELETE' })
     setItems(prev => prev.filter(x=> String(x._id)!==String(id)))
     toast('Deleted')
   }
@@ -35,7 +36,7 @@ export default function ContactList(){
             <button className="btn danger" onClick={()=>onDelete(x._id)} style={{marginLeft:8}}>Delete</button>
          </td></tr>)}
        </tbody></table>}
-      <div style={{marginTop:8}}><button className="btn" onClick={async()=>{{await api.removeAll(RES.contacts); setItems([]); toast('All deleted')}}}>Delete All</button></div>
+      <div style={{marginTop:8}}><button className="btn" onClick={async()=>{{await apiIndex.request('/contacts', { method: 'DELETE' }); setItems([]); toast('All deleted')}}}>Delete All</button></div>
     </div>
   )
 }

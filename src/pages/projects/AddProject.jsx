@@ -52,6 +52,7 @@
 
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../../api/index'
 
 export default function AddProject() {
   const navigate = useNavigate()
@@ -64,39 +65,28 @@ export default function AddProject() {
     e.preventDefault()
     setError(null)
 
-    const token = window.localStorage.getItem('token')
-    if (!token) {
-      // no token: redirect to signin so user can log in
-      // keep a helpful message in query or use toast as you prefer
-      window.alert('You must be signed in to create a project. Redirecting to Sign In.')
-      navigate('/signin')
-      return
-    }
-
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:4000/api/projects', {
+      // Use unified API helper: base = VITE_API_URL or http://localhost:4000/api
+      const created = await api.request('/api/projects', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
         body: JSON.stringify({ title, description })
       })
 
-      const body = await res.json()
-      console.log('create project response', res.status, body)
-
-      if (!res.ok) {
-        throw new Error(body.message || `Create failed (${res.status})`)
-      }
+      console.log('create project response', created)
 
       // success — go to projects list where the new project should appear
       navigate('/projects')
     } catch (err) {
       console.error('Create project error', err)
       setError(err.message || 'Failed to create project')
-      // you can show a toast here instead of alert
+      // On unauthorized, redirect to signin to acquire token
+      if (err.status === 401) {
+        window.alert('You must be signed in to create a project. Redirecting to Sign In.')
+        navigate('/signin')
+        return
+      }
+      // you can show a toast here instead of alert for other errors
       window.alert('Failed to create project: ' + (err.message ?? err))
     } finally {
       setLoading(false)

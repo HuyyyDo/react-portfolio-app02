@@ -1,3 +1,64 @@
+# React Portfolio App – API Setup
+
+This app uses a unified API helper (`src/api/index.js`) for all data calls. Set `VITE_API_URL` to your backend base (including `/api`) or the app will default to `http://localhost:4000/api`.
+
+## Expected Backend Routes
+
+- Auth (no `/api` prefix):
+	- `POST /signup` → returns user (optionally token)
+	- `POST /signin` → returns `{ token }` (or `jwt`/`accessToken`)
+
+- Projects (`/api` prefix):
+	- `GET /api/projects`
+	- `GET /api/projects/:id`
+	- `POST /api/projects` (requires `Authorization: Bearer <token>`) body: `{ title, description, completion? }`
+	- `PUT /api/projects/:id` (Bearer)
+	- `DELETE /api/projects/:id` (Bearer)
+	- `DELETE /api/projects` (delete all; Bearer)
+
+- Services (`/api` prefix):
+	- `GET /api/services`
+	- `GET /api/services/:id`
+	- `POST /api/services` (Bearer) body: `{ title, description }`
+	- `PUT /api/services/:id` (Bearer)
+	- `DELETE /api/services/:id` (Bearer)
+	- `DELETE /api/services` (Bearer)
+
+- Contacts (`/api` prefix):
+	- `GET /api/contacts`
+	- `GET /api/contacts/:id`
+	- `POST /api/contacts` (Bearer) body: `{ firstname, lastname, email }`
+	- `PUT /api/contacts/:id` (Bearer)
+	- `DELETE /api/contacts/:id` (Bearer)
+	- `DELETE /api/contacts` (Bearer)
+
+## CORS Requirements (Dev)
+
+Enable CORS for `http://localhost:5173` and allow headers: `Authorization, Content-Type`. Handle `OPTIONS` preflight for all `/api/*` routes with methods `GET, POST, PUT, DELETE`.
+
+## Environment
+
+Create a `.env` (or `.env.local`) in the project root:
+
+```
+VITE_API_URL=http://localhost:4000/api
+```
+
+## Running
+
+1. Start backend on port `4000`.
+2. Start frontend:
+
+```
+npm run dev
+```
+
+3. Optional: run Cypress spec to validate add-project flow:
+
+```
+npx cypress run --spec cypress/e2e/02-add-project.spec.cy.js
+```
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

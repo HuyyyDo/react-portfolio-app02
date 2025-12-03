@@ -38,21 +38,21 @@ export async function createProject(projectData) {
   const options = { method: 'POST' };
   if (projectData instanceof FormData) options.body = projectData;
   else options.body = JSON.stringify(projectData);
-  return api.request('/projects', options);
+  return api.request('/api/projects', options);
 }
 
 export async function updateProject(id, projectData) {
   const options = { method: 'PUT' };
   if (projectData instanceof FormData) options.body = projectData;
   else options.body = JSON.stringify(projectData);
-  return api.request(`/projects/${id}`, options);
+  return api.request(`/api/projects/${id}`, options);
 }
 
 export async function deleteProject(id) {
-  return api.request(`/projects/${id}`, { method: 'DELETE' });
+  return api.request(`/api/projects/${id}`, { method: 'DELETE' });
 }
 
 export async function deleteAllProjects() {
   // if your backend supports DELETE /projects to remove all
-  return api.request('/projects', { method: 'DELETE' });
+  return api.request('/api/projects', { method: 'DELETE' });
 }

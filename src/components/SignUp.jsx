@@ -12,11 +12,13 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await api.request('/auth/signup', {
+      const data = await api.request('/signup', {
         method: 'POST',
-        body: JSON.stringify({ name, email, password })
+        // Backend expects `firstname`/`lastname` per validation error
+        body: JSON.stringify({ firstname: name.split(' ')[0] || name, lastname: name.split(' ').slice(1).join(' ') || '', email, password })
       });
-      localStorage.setItem('token', data.token);
+      const token = data?.token || data?.jwt || data?.accessToken;
+      if (token) localStorage.setItem('token', token);
       // you might save user info too
       nav('/'); // or projects page
     } catch (error) {

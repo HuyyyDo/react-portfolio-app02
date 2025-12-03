@@ -11,11 +11,12 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await api.request('/auth/signin', {
+      const data = await api.request('/signin', {
         method: 'POST',
         body: JSON.stringify({ email, password })
       });
-      localStorage.setItem('token', data.token);
+      const token = data?.token || data?.jwt || data?.accessToken;
+      if (token) localStorage.setItem('token', token);
       // optionally store user: localStorage.setItem('user', JSON.stringify(data.user));
       nav('/');
     } catch (error) {

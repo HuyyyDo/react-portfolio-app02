@@ -55,6 +55,7 @@
 
 // src/pages/Projects.jsx
 import { useEffect, useState } from "react";
+import api from "../api/index";
 
 // Optional: keep these as a fallback if the API is empty/unavailable
 const FALLBACK = [
@@ -81,17 +82,12 @@ export default function Projects() {
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState("");
 
-  // Use env var when deployed, fallback to localhost in dev
-  const API = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
-
   useEffect(() => {
     let alive = true;
 
     (async () => {
       try {
-        const res = await fetch(`${API}/api/projects`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await api.request('/api/projects');
 
         // Map backend fields to your UI fields (img/role/link may not exist yet)
         const mapped = (Array.isArray(data) ? data : []).map(p => ({
@@ -120,7 +116,7 @@ export default function Projects() {
     return () => {
       alive = false;
     };
-  }, [API]);
+  }, []);
 
   if (loading) return <p>Loading projects…</p>;
   if (error)   return (

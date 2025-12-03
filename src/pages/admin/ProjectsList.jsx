@@ -45,6 +45,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { api } from '../../api/client';
+import apiIndex from '../../api/index';
 import { RES } from '../../api/resources';
 import Spinner from '../../components/Spinner';
 import { toast } from '../../components/Toast';
@@ -58,8 +59,8 @@ export default function ProjectList(){
 
   React.useEffect(()=>{
     let alive = true;
-    api.list(RES.projects)
-      .then(d => { if (alive) setItems(d); })
+    apiIndex.request('/api/projects')
+      .then(d => { if (alive) setItems(Array.isArray(d) ? d : []); })
       .catch(e => { if (alive) setError(e.message || 'Failed to load'); })
       .finally(()=> { if (alive) setLoading(false); });
     return ()=>{ alive = false };
@@ -68,7 +69,7 @@ export default function ProjectList(){
   async function onDelete(id){
     if(!confirm('Delete this item?')) return;
     try {
-      await deleteProject(id);
+      await apiIndex.request(`/projects/${id}`, { method: 'DELETE' });
       setItems(prev => prev.filter(x => String(x._id) !== String(id)));
       toast('Deleted');
     } catch (e) {
@@ -80,7 +81,7 @@ export default function ProjectList(){
   async function onDeleteAll(){
     if(!confirm('Delete ALL projects? This cannot be undone.')) return;
     try {
-      await deleteAllProjects();
+      await apiIndex.request('/projects', { method: 'DELETE' });
       setItems([]);
       toast('All deleted');
     } catch (e) {
